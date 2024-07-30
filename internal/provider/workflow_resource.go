@@ -86,10 +86,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
-	values := map[string]string{"certificate": plan.WORKFLOW.ValueString()}
-	jsonData, _ := json.Marshal(values)
-
-	request, err := http.NewRequest("POST", r.client.Url, bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", r.client.Url, bytes.NewBuffer([]byte(plan.WORKFLOW.ValueString())))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-N8N-API-KEY", r.client.Token)
 	client := &http.Client{}
