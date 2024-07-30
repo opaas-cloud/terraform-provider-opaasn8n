@@ -104,6 +104,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	bodyString := string(bodyBytes)
+	resp.Diagnostics.AddWarning("Test", bodyString)
 	if response.StatusCode != 200 {
 		resp.Diagnostics.AddError("Not created", bodyString)
 	}
@@ -137,7 +138,7 @@ func (r *workFlowResource) Delete(ctx context.Context, req resource.DeleteReques
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 
-	request, err := http.NewRequest("DELETE", r.client.Url+"/"+state.ID.ValueString(), nil)
+	request, err := http.NewRequest("DELETE", r.client.Url+state.ID.ValueString(), nil)
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-N8N-API-KEY", r.client.Token)
 	client := &http.Client{}
