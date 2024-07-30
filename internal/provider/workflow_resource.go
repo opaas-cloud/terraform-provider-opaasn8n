@@ -90,6 +90,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 	jsonData, _ := json.Marshal(values)
 
 	request, err := http.NewRequest("POST", r.client.Url, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-N8N-API-KEY", r.client.Token)
 	client := &http.Client{}
 	response, err := client.Do(request)
@@ -140,6 +141,7 @@ func (r *workFlowResource) Delete(ctx context.Context, req resource.DeleteReques
 	resp.Diagnostics.Append(diags...)
 
 	request, err := http.NewRequest("DELETE", r.client.Url+"/"+state.ID.ValueString(), nil)
+	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-N8N-API-KEY", r.client.Token)
 	client := &http.Client{}
 	response, err := client.Do(request)
