@@ -34,7 +34,7 @@ type workFlowModel struct {
 }
 
 type workflowJsonModel struct {
-	ID types.String `json:"id"`
+	ID string `json:"id"`
 }
 
 // Configure adds the provider configured client to the resource.
@@ -104,7 +104,6 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	bodyString := string(bodyBytes)
-	resp.Diagnostics.AddWarning("Test", bodyString)
 	if response.StatusCode != 200 {
 		resp.Diagnostics.AddError("Not created", bodyString)
 	}
@@ -114,7 +113,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 
 	_ = json.Unmarshal(bodyBytes, &jsonModel)
 
-	plan.ID = types.StringValue(jsonModel.ID.ValueString())
+	plan.ID = types.StringValue(jsonModel.ID)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
