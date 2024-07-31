@@ -118,7 +118,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 	requestActivate, errActivate := http.NewRequest("POST", r.client.Url+plan.ID.ValueString()+"/activate", nil)
 	requestActivate.Header.Set("Content-Type", "application/json")
 	requestActivate.Header.Set("X-N8N-API-KEY", r.client.Token)
-	responseActivate, errActivate := client.Do(request)
+	responseActivate, errActivate := client.Do(requestActivate)
 
 	if errActivate != nil {
 		resp.Diagnostics.AddError("Cannot send post request", errActivate.Error())
@@ -126,8 +126,14 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 
 	defer responseActivate.Body.Close()
 
+	bodyBytesActivate, err := io.ReadAll(responseActivate.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bodyStringActivate := string(bodyBytesActivate)
 	if responseActivate.StatusCode != 200 {
-		resp.Diagnostics.AddError("Not activated", bodyString)
+		resp.Diagnostics.AddError("Not activated", bodyStringActivate)
 	}
 
 	// Set state to fully populated data
