@@ -118,12 +118,17 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 	requestActivate, errActivate := http.NewRequest("POST", r.client.Url+plan.ID.ValueString()+"/activate", nil)
 	requestActivate.Header.Set("Content-Type", "application/json")
 	requestActivate.Header.Set("X-N8N-API-KEY", r.client.Token)
+	responseActivate, errActivate := client.Do(request)
 
 	if errActivate != nil {
 		resp.Diagnostics.AddError("Cannot send post request", errActivate.Error())
 	}
 
-	defer response.Body.Close()
+	defer requestActivate.Body.Close()
+
+	if responseActivate.StatusCode != 200 {
+		resp.Diagnostics.AddError("Not activated", bodyString)
+	}
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
