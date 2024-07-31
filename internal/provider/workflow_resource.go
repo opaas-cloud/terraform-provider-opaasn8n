@@ -124,7 +124,7 @@ func (r *workFlowResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Cannot send post request", errActivate.Error())
 	}
 
-	defer requestActivate.Body.Close()
+	defer responseActivate.Body.Close()
 
 	if responseActivate.StatusCode != 200 {
 		resp.Diagnostics.AddError("Not activated", bodyString)
